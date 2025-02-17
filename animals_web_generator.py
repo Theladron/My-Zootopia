@@ -6,26 +6,40 @@ def load_data(file_path):
         return json.load(handle)
 
 
-def print_animals():
+def replace_data(animal_data):
+    with open("animals_template.html", "r") as handle:
+        data = handle.read()
+
+    new_data = data.replace("            __REPLACE_ANIMALS_INFO__", animal_data)
+    return new_data
+
+
+def write_html(data):
+    with open("animals.html", "w") as handle:
+        handle.write(data)
+
+
+def get_animals_data():
     data = load_data("animals_data.json")
+    output = ""
     for entry in data:
         name = get_animal_name(entry)
         if name is not None:
-            print(name)
+            output += f"Name: {name}\n"
 
         diet = get_animal_diet(entry)
         if diet is not None:
-            print(diet)
+            output += f"Diet: {diet}\n"
 
         location = get_animal_location(entry)
         if location is not None:
-            print(location)
+            output += f"Location: {location}\n"
 
         animal_type = get_animal_type(entry)
         if animal_type is not None:
-            print(animal_type)
+            output += f"Type: {animal_type}\n"
 
-        print()
+    return output
 
 
 def get_animal_name(entry):
@@ -45,7 +59,9 @@ def get_animal_type(entry):
 
 
 def main():
-    print_animals()
+    animal_data = get_animals_data()
+    new_data = replace_data(animal_data)
+    write_html(new_data)
 
 
 if __name__ == "__main__":
