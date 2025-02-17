@@ -7,7 +7,12 @@ def load_data(file_path):
 
 
 def replace_html(animal_data):
-
+    """
+    replaces filler data from a specific given html
+    file with the created animal data
+    :param animal_data: created html code as str
+    :return: complete html site code as str
+    """
     with open("animals_template.html", "r") as handle:
         data = handle.read()
 
@@ -16,13 +21,21 @@ def replace_html(animal_data):
 
 
 def write_new_html(data):
-
+    """
+    creates/writes a html file with the data
+    :param data: html code as str
+    """
     with open("animals.html", "w") as handle:
         handle.write(data)
 
 
 def serialize_animal(entry):
-
+    """
+    creates html string with the different found
+    entries
+    :param entry: dict
+    :return: corrected html as str
+    """
     output = ""
     output += '<li class="cards__item">\n'
 
@@ -55,38 +68,69 @@ def serialize_animal(entry):
 
 
 def get_animal_name(entry):
-
+    """
+    gets the value from the entry 'name',
+    {} if not found
+    :param entry: dict
+    :return: value as str, {} if not found
+    """
     return entry.get("name", {})
 
 
 def get_animal_diet(entry):
-
+    """
+    gets the value from the entry diet',
+    {} if not found
+    :param entry: dict
+    :return: value as str, {} if not found
+    """
     return entry.get("characteristics", {}).get("diet")
 
 
 def get_animal_location(entry):
-
+    """
+    gets the first value from the 'location' list,
+    None if not found
+    :param entry: dict
+    :return: value as str, None if not found
+    """
     return entry.get("locations", [None])[0]
 
 
 def get_animal_type(entry):
-
+    """
+    gets the value from the entry 'type',
+    {} if not found
+    :param entry: dict
+    :return: value as str, {} if not found
+    """
     return entry.get("characteristics", {}).get("type")
 
 
 def get_animal_prey(entry):
-
+    """
+    gets the value from the entry 'prey',
+    {} if not found
+    :param entry: dict
+    :return: value as str, {} if not found
+    """
     return entry.get("characteristics", {}).get("prey")
 
 
 def create_animal_html(user_input):
-
+    """
+    loops through the json file, checks if skin type is matched,
+    gets animal data, informs user if no matching data found
+    :param user_input: input as str
+    :return: html created as str
+    """
     data = load_data("animals_data.json")
     output = ""
 
     for animal_obj in data:
         skin_type = animal_obj.get("characteristics", {}).get("skin_type")
-        if user_input.lower() in skin_type.lower():
+        if (user_input.lower() in skin_type.lower()
+            or "all" in user_input.lower()):
             output += serialize_animal(animal_obj)
 
     if output == "":
@@ -96,7 +140,10 @@ def create_animal_html(user_input):
 
 
 def get_user_input():
-
+    """
+    gets input from the user
+    :return: input as str
+    """
     print("""Possible skin types:
 Hair
 Fur
@@ -109,7 +156,7 @@ Enter the skin type of the animals you want to see: """, end="")
 
 
 def main():
-
+    """calls for user_input and html site creation"""
     user_input = get_user_input()
     output = create_animal_html(user_input)
     new_data = replace_html(output)
