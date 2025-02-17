@@ -23,21 +23,24 @@ def get_animals_data():
     data = load_data("animals_data.json")
     output = ""
     for entry in data:
+        output += '<li class="cards__item">'
         name = get_animal_name(entry)
         if name is not None:
-            output += f"Name: {name}\n"
+            output += f"Name: {name}\n<br/>"
 
         diet = get_animal_diet(entry)
         if diet is not None:
-            output += f"Diet: {diet}\n"
+            output += f"Diet: {diet}\n<br/>"
 
         location = get_animal_location(entry)
         if location is not None:
-            output += f"Location: {location}\n"
+            output += f"Location: {location}\n<br/>"
 
         animal_type = get_animal_type(entry)
         if animal_type is not None:
-            output += f"Type: {animal_type}\n"
+            output += f"Type: {animal_type}\n<br/>"
+
+        output += "</li>"
 
     return output
 
