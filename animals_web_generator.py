@@ -3,9 +3,9 @@ import requests
 API_KEY = "W2lsKCIZ613ogZrhdObafg==GDrSg3BXhnOk2y5e"
 
 
-def load_data():
+def load_data(user_input):
     """Loads a JSON file"""
-    response = requests.get("https://api.api-ninjas.com/v1/animals?name=fox", headers={"X-Api-Key": API_KEY})
+    response = requests.get("https://api.api-ninjas.com/v1/animals?name=" + user_input, headers={"X-Api-Key": API_KEY})
     data = response.json()
     return data
 
@@ -44,26 +44,26 @@ def serialize_animal(entry):
     output += '<li class="cards__item">\n'
 
     name = get_animal_name(entry)
-    if name is not None:
+    if name:
         output += f'  <div class="card__title">{name}</div>\n'
 
     output += '  <div class="card__text">\n'
     output += "    <ul>\n"
 
     diet = get_animal_diet(entry)
-    if diet is not None:
+    if diet:
         output += f"      <li><strong>Diet:</strong> {diet}</li>\n"
 
     location = get_animal_location(entry)
-    if location is not None:
-        output += f"      <li><strong>Location:</strong> {location}</li>\n"
+    if location:
+        output += f"      <li><strong>Location:</strong> {location[0]}</li>\n"
 
     animal_type = get_animal_type(entry)
-    if animal_type is not None:
+    if animal_type:
         output += f"      <li><strong>Type:</strong> {animal_type}</li>\n"
 
     prey = get_animal_prey(entry)
-    if prey is not None:
+    if prey:
         output += f"      <li><strong>Prey:</strong> {prey}</li>\n"
 
     output += "    </ul>\n  </div>\n</li>\n"
@@ -98,7 +98,7 @@ def get_animal_location(entry):
     :param entry: dict
     :return: value as str, None if not found
     """
-    return entry.get("locations", [None])[0]
+    return entry.get("locations", [None])
 
 
 def get_animal_type(entry):
@@ -121,26 +121,21 @@ def get_animal_prey(entry):
     return entry.get("characteristics", {}).get("prey")
 
 
-def create_animal_html(user_input):
+def create_animal_html(data, user_input):
     """
     loops through the json file, checks if skin type is matched,
     gets animal data, informs user if no matching data found
     :param user_input: input as str
     :return: html created as str
     """
-    data = load_data()
     output = ""
 
     for animal_obj in data:
-        skin_type = animal_obj.get("characteristics", {}).get("skin_type")
-        if (skin_type is not None
-            and (user_input.lower() in skin_type.lower()
-            or "all" in user_input.lower())):
-                output += serialize_animal(animal_obj)
+        output += serialize_animal(animal_obj)
 
     if output == "":
-        return (f'<div class="card__title">No Animals with '
-                f'skin type "{user_input}" found</div>')
+        return (f'<div class="card__title">No animals found for '
+                f'your search of "{user_input}".')
     return output
 
 
@@ -149,13 +144,7 @@ def get_user_input():
     gets input from the user
     :return: input as str
     """
-    print("""Possible skin types:
-Hair
-Fur
-Scales
-All   for every animal
-
-Enter the skin type of the animals you want to see: """, end="")
+    print("""Enter the name of an animal: """, end="")
     user_input = input("")
     return user_input
 
@@ -163,7 +152,8 @@ Enter the skin type of the animals you want to see: """, end="")
 def main():
     """calls for user_input and html site creation"""
     user_input = get_user_input()
-    output = create_animal_html(user_input)
+    data = load_data(user_input)
+    output = create_animal_html(data, user_input)
     new_data = replace_html(output)
     write_new_html(new_data)
 
