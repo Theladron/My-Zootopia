@@ -1,9 +1,13 @@
-import json
+import requests
 
-def load_data(file_path):
+API_KEY = "W2lsKCIZ613ogZrhdObafg==GDrSg3BXhnOk2y5e"
+
+
+def load_data():
     """Loads a JSON file"""
-    with open(file_path, "r") as handle:
-        return json.load(handle)
+    response = requests.get("https://api.api-ninjas.com/v1/animals?name=fox", headers={"X-Api-Key": API_KEY})
+    data = response.json()
+    return data
 
 
 def replace_html(animal_data):
@@ -16,7 +20,7 @@ def replace_html(animal_data):
     with open("animals_template.html", "r") as handle:
         data = handle.read()
 
-    new_data = data.replace("            __REPLACE_ANIMALS_INFO__", animal_data)
+    new_data = data.replace("__REPLACE_ANIMALS_INFO__", animal_data)
     return new_data
 
 
@@ -124,14 +128,15 @@ def create_animal_html(user_input):
     :param user_input: input as str
     :return: html created as str
     """
-    data = load_data("animals_data.json")
+    data = load_data()
     output = ""
 
     for animal_obj in data:
         skin_type = animal_obj.get("characteristics", {}).get("skin_type")
-        if (user_input.lower() in skin_type.lower()
-            or "all" in user_input.lower()):
-            output += serialize_animal(animal_obj)
+        if (skin_type is not None
+            and (user_input.lower() in skin_type.lower()
+            or "all" in user_input.lower())):
+                output += serialize_animal(animal_obj)
 
     if output == "":
         return (f'<div class="card__title">No Animals with '
