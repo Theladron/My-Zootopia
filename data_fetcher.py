@@ -1,7 +1,9 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-API_KEY = "W2lsKCIZ613ogZrhdObafg==GDrSg3BXhnOk2y5e"
-
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
 
 def fetch_data(user_input):
     """
