@@ -14,9 +14,9 @@ and create an HTML file from specific entries of the found data
 
 ## Installation
 
-To install this project, simply clone the repository and install the dependencies
+To install this project, simply clone the repository and install the dependencies.
 If you want to use the data fetcher, you need to register at https://api-ninjas.com for free
-and create a .env file containing your personal api key, The .env just needs the following line:
+and create a .env file containing your personal api key. The .env just needs the following line:
 API_KEY="your key"
 
 ## Usage
